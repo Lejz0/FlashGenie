@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlashGenie.Core.Entities\FlashGenie.Core.Entities.csproj" />
+    <ProjectReference Include="..\FlashGenie.Core.Interfaces\FlashGenie.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\FlashGenie.Infrastructure.Data\FlashGenie.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\FlashGenie.Infrastructure.Services\FlashGenie.Infrastructure.Services.csproj" />
+    <ProjectReference Include="..\FlashGenie.Services.Interfaces\FlashGenie.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\FlashGenie.Services\FlashGenie.Services.csproj" />
+  </ItemGroup>
+
+</Project>

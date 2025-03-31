@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlashGenie.Core.Interfaces\FlashGenie.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\FlashGenie.Core\FlashGenie.Core.csproj" />
+    <ProjectReference Include="..\FlashGenie.Infrastructure.Common\FlashGenie.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\FlashGenie.Services.Interfaces\FlashGenie.Services.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
