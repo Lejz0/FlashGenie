@@ -12,5 +12,6 @@ namespace FlashGenie.Core.DTOs.Response
         public string Name { get; set; }
         public int QuestionCount { get; set; }
         public string UserName { get; set; }
+        public IEnumerable<QuestionDTO> Questions { get; set; }
     }
 }
