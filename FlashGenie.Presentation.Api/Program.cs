@@ -1,8 +1,11 @@
 using FlashGenie.Core.ApplicationOptions;
 using FlashGenie.Infrastructure.Data.RegisterServices;
+using FlashGenie.Infrastructure.Services.Implementation;
+using FlashGenie.Infrastructure.Services.Interface;
 using FlashGenie.Presentation.Api.Middlewares;
 using FlashGenie.Presentation.Api.RegisterServices;
 using FlashGenie.Services.RegisterServices;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,14 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
+});
+
+builder.Services.AddHttpClient<IGroqService, GroqService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.groq.com/");
+    client.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", "ADD API KEY HERE");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
 var app = builder.Build();
