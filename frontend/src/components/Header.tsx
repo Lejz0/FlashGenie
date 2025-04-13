@@ -1,8 +1,28 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
 import { NavLink } from 'react-router';
+import { JSX } from 'react';
 
 const Header = () => {
+  // CHANGE: Check if the user is taking a quiz
+  const isTakingAQuiz: boolean = false;
+
+  const renderMenuItems = (): JSX.Element =>
+    isTakingAQuiz ? (
+      <Button component={NavLink} variant='contained' color='error' to='/dashboard'>
+        Exit Quiz
+      </Button>
+    ) : (
+      <>
+        <Button component={NavLink} color='secondary' size='medium' to='/dashboard'>
+          Dashboard
+        </Button>
+        <Button component={NavLink} color='secondary' size='medium' to='/logout'>
+          Logout
+        </Button>
+      </>
+    );
+
   return (
     <AppBar component='nav' position='static'>
       <Toolbar>
@@ -17,20 +37,7 @@ const Header = () => {
           </Box>
 
           <Box sx={styles.menuWrapper}>
-            <Box sx={styles.menuContainer}>
-              <Button component={NavLink} color='secondary' size='medium' to={'/login'}>
-                Login
-              </Button>
-              <Button component={NavLink} color='secondary' size='medium' to={'/logout'}>
-                Logout
-              </Button>
-              <Button component={NavLink} color='secondary' size='medium' to={'/dashboard'}>
-                Dashboard
-              </Button>
-              <Button component={NavLink} variant='contained' color='error' to={'/dashboard'}>
-                Exit Quiz
-              </Button>
-            </Box>
+            <Box sx={styles.menuContainer}>{renderMenuItems()}</Box>
           </Box>
         </Box>
       </Toolbar>
