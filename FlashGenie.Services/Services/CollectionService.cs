@@ -45,7 +45,7 @@ namespace FlashGenie.Services.Services
             }).ToList();
         }
 
-        public async Task<CollectionResponseDTO> GetCollectionByIdAsync(BaseEntity id)
+        public async Task<CollectionResponseDTO> GetCollectionByIdAsync(Guid id)
         {
             var collection = await _collectionRepository.GetByIdAsync(id);
             if (collection == null)
@@ -73,7 +73,7 @@ namespace FlashGenie.Services.Services
             };
         }
 
-        public async Task<CollectionResponseDTO> DeleteCollectionAsync(BaseEntity id)
+        public async Task<CollectionResponseDTO> DeleteCollectionAsync(Guid id)
         {
             var deletedCollection = await _collectionRepository.DeleteAsync(id);
             if (deletedCollection == null)
@@ -101,7 +101,7 @@ namespace FlashGenie.Services.Services
             };
         }
 
-        public async Task<IEnumerable<QuestionDTO>> GetQuestionsByCollectionIdAsync(BaseEntity collectionId)
+        public async Task<IEnumerable<QuestionDTO>> GetQuestionsByCollectionIdAsync(Guid collectionId)
         {
             var questions = await _collectionRepository.GetQuestionsByCollectionIdAsync(collectionId);
             return questions.Select(q => new QuestionDTO

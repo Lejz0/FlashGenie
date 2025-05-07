@@ -24,7 +24,7 @@ namespace FlashGenie.Presentation.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCollectionById(BaseEntity id)
+        public async Task<IActionResult> GetCollectionById(Guid id)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace FlashGenie.Presentation.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCollection(BaseEntity id)
+        public async Task<IActionResult> DeleteCollection(Guid id)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace FlashGenie.Presentation.Api.Controllers
         }
 
         [HttpGet("{id}/questions")]
-        public async Task<IActionResult> GetQuestionsByCollectionId(BaseEntity id)
+        public async Task<IActionResult> GetQuestionsByCollectionId(Guid id)
         {
             var questions = await _collectionService.GetQuestionsByCollectionIdAsync(id);
             return Ok(questions);

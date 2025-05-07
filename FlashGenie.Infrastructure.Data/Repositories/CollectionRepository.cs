@@ -20,7 +20,7 @@ namespace FlashGenie.Infrastructure.Data.Repositories
             _context = context;
         }
 
-        public async Task<Collection> DeleteAsync(BaseEntity id)
+        public async Task<Collection> DeleteAsync(Guid id)
         {
             var collection = await GetByIdAsync(id);
             if (collection != null)
@@ -41,19 +41,19 @@ namespace FlashGenie.Infrastructure.Data.Repositories
 
         }
 
-        public async Task<Collection> GetByIdAsync(BaseEntity id)
+        public async Task<Collection> GetByIdAsync(Guid id)
         {
             return await _context.Collections
             .Include(c => c.User) // Include user relationship.
             .Include(c => c.Questions) // Include related questions.
-            .FirstOrDefaultAsync(c => c.Id == id.Id);
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         }
 
-        public async Task<IEnumerable<Question>> GetQuestionsByCollectionIdAsync(BaseEntity collectionId)
+        public async Task<IEnumerable<Question>> GetQuestionsByCollectionIdAsync(Guid collectionId)
         {
             return await _context.Questions
-            .Where(q => q.CollectionId == collectionId.Id) // Filter by CollectionId
+            .Where(q => q.CollectionId == collectionId) // Filter by CollectionId
             .ToListAsync();
 
         }

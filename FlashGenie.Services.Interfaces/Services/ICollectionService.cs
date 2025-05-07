@@ -12,9 +12,9 @@ namespace FlashGenie.Services.Interfaces.Services
     public interface ICollectionService
     {
         Task<IEnumerable<CollectionResponseDTO>> GetAllCollectionsAsync(); // Fetch all collections.
-        Task<CollectionResponseDTO> GetCollectionByIdAsync(BaseEntity id); // Fetch a collection by ID.
-        Task<CollectionResponseDTO> DeleteCollectionAsync(BaseEntity id); // Delete a collection and return it.
-        Task<IEnumerable<QuestionDTO>> GetQuestionsByCollectionIdAsync(BaseEntity collectionId); // Retrieve questions from a collection.
+        Task<CollectionResponseDTO> GetCollectionByIdAsync(Guid id); // Fetch a collection by ID.
+        Task<CollectionResponseDTO> DeleteCollectionAsync(Guid id); // Delete a collection and return it.
+        Task<IEnumerable<QuestionDTO>> GetQuestionsByCollectionIdAsync(Guid collectionId); // Retrieve questions from a collection.
 
     }
 }
