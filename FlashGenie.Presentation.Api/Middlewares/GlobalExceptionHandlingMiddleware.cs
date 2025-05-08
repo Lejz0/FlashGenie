@@ -42,6 +42,11 @@ namespace FlashGenie.Presentation.Api.Middlewares
                 _logger.LogError($"A new user already exists exception has been thrown: {uoeEx}");
                 await HandleExceptionAsync(context, uoeEx);
             }
+            catch (ObjectIsNullException oine)
+            {
+                _logger.LogError($"The object doesn't exist exception has been thrown: {oine}");
+                await HandleExceptionAsync(context, oine);
+            }
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong: {ex}");

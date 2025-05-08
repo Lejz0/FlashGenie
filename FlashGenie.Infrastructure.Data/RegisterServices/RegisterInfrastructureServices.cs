@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using FlashGenie.Core.Entities.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using FlashGenie.Core.Interfaces.Repositories;
+using FlashGenie.Infrastructure.Data.Repositories;
 
 namespace FlashGenie.Infrastructure.Data.RegisterServices
 {
@@ -34,6 +36,8 @@ namespace FlashGenie.Infrastructure.Data.RegisterServices
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<ICollectionRepository, CollectionRepository>();
         }
     }
 }
