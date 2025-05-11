@@ -1,7 +1,7 @@
 ﻿
 namespace FlashGenie.Core.Entities.Enums
 {
-    public enum Type
+    public enum TypeEnum
     {
         SINGLE_CHOICE,
         MULTIPLE_CHOICE,

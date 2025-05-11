@@ -1,6 +1,7 @@
 ﻿
 using FlashGenie.Core.Constants;
 using FlashGenie.Core.Entities.Entities;
+using FlashGenie.Core.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Text.Json;
@@ -18,7 +19,7 @@ namespace FlashGenie.Infrastructure.Data.Config
                 .HasForeignKey(x => x.CollectionId).OnDelete(DeleteBehavior.Cascade);
             builder.Property(x => x.Type).HasConversion(
                  to => JsonSerializer.Serialize(to, SerializationConstants.serializerOptions),
-                 from => JsonSerializer.Deserialize<Type>(from, SerializationConstants.serializerOptions));
+                 from => JsonSerializer.Deserialize<TypeEnum>(from, SerializationConstants.serializerOptions));
         }
     }
 }

@@ -2,12 +2,7 @@
 using FlashGenie.Core.DTOs;
 using FlashGenie.Core.Interfaces.Repositories;
 using FlashGenie.Services.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FlashGenie.Core.Entities.Entities.Base;
+
 
 namespace FlashGenie.Services.Services
 {
