@@ -14,17 +14,17 @@ const Header = () => {
       </Button>
     ) : (
       <>
-        <Button component={NavLink} color='secondary' size='medium' to='/dashboard'>
+        <Button component={NavLink} color='text' size='medium' to='/dashboard'>
           Dashboard
         </Button>
-        <Button component={NavLink} color='secondary' size='medium' to='/logout'>
+        <Button component={NavLink} color='text' size='medium' to='/logout'>
           Logout
         </Button>
       </>
     );
 
   return (
-    <AppBar component='nav' position='static'>
+    <AppBar component='nav' position='static' color='primary.contrastText' sx={styles.appBar}>
       <Toolbar>
         <Box sx={styles.navbarContainer}>
           <Box sx={styles.logoAndTextWrapper}>
@@ -46,6 +46,7 @@ const Header = () => {
 };
 
 const styles = {
+  appBar: { boxShadow: 3, marginBottom: 4 },
   navbarContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -57,7 +58,7 @@ const styles = {
   logo: {
     height: '44px',
   },
-  logoText: { fontWeight: '800', pl: 1 },
+  logoText: { fontWeight: '800', paddingLeft: 1 },
   menuWrapper: {
     display: 'flex',
     justifyContent: 'flex-end',

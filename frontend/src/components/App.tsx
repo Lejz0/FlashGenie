@@ -1,18 +1,19 @@
-import MainContent from './MainContent.tsx';
-import Header from './Header.tsx';
-import { Box } from '@mui/material';
+import Dashboard from './Dashboard.tsx';
+import { Route, Routes } from 'react-router';
+import LoginPage from './LoginPage.tsx';
+import ErrorPage from './ErrorPage.tsx';
+import Layout from './Layout.tsx';
 
 function App() {
   return (
-    <Box sx={styles.layout}>
-      <Header />
-      <MainContent />
-    </Box>
+    <Routes>
+      <Route path='/' element={<Layout />}>
+        <Route index element={<Dashboard />} />
+      </Route>
+      <Route path='/login' element={<LoginPage />} />
+      <Route path='*' element={<ErrorPage />} />
+    </Routes>
   );
 }
-
-const styles = {
-  layout: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
-};
 
 export default App;

@@ -2,24 +2,24 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './components/App';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
-import LoginPage from './components/LoginPage.tsx';
-import LogoutPage from './components/LogoutPage.tsx';
-import ErrorPage from './components/ErrorPage.tsx';
+import { BrowserRouter } from 'react-router';
 
 const theme = createTheme({
   palette: {
-    background: {
-      default: '#000000',
-    },
+    mode: 'light',
     primary: {
-      main: '#ffffff',
+      main: '#2563eb',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#000000',
+      main: '#e5f4ed',
+    },
+    background: {
+      default: '#f9fafb',
     },
     text: {
-      primary: '#000000',
+      primary: '#1f2937',
+      secondary: '#6b7280',
     },
   },
   typography: {
@@ -42,13 +42,7 @@ const theme = createTheme({
 createRoot(document.getElementById('root')!).render(
   <ThemeProvider theme={theme}>
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Navigate to={'/dashboard'} />} />
-        <Route path='/dashboard' element={<App />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/logout' element={<LogoutPage />} />
-        <Route path='*' element={<ErrorPage />} />
-      </Routes>
+      <App />
     </BrowserRouter>
   </ThemeProvider>,
 );
