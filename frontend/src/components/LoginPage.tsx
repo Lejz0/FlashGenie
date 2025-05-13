@@ -10,8 +10,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = (event) => {
+    event.preventDefault();
 
     if (email && password) {
       AuthorizationService.login({ email, password })
