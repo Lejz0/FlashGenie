@@ -23,7 +23,7 @@ const CollectionItem = (props: CollectionItemProps) => {
         <Typography color='text.secondary'>{questionsCount} Questions</Typography>
       </Box>
       <Box sx={styles.buttonsContainer}>
-        <Button variant='contained' onClick={handleTakeQuizClick}>
+        <Button disableElevation variant='contained' onClick={handleTakeQuizClick}>
           Take quiz
         </Button>
         <Button variant='outlined' color='text.main' onClick={handleExportClick}>
