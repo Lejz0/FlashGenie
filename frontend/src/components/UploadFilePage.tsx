@@ -88,7 +88,11 @@ const UploadFilePage = () => {
 
   const extractPdfText = (file) => {
     pdfToText(file)
-      .then((text) => setText(text))
+      .then((text) => {
+        const t = text;
+        setText(t);
+        console.log(t);
+      })
       .catch(() => setError('Failed to extract text from pdf'));
   };
   const handleGenerateClick = () => {
@@ -146,7 +150,7 @@ const UploadFilePage = () => {
           fullWidth
           disableElevation
           variant='contained'
-          loadingPosition='start'
+          loadingPosition='center'
           loading={isLoading}
           sx={styles.button}
           onClick={handleGenerateClick}

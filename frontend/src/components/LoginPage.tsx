@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AuthorizationService from '../services/AuthorizationService.ts';
@@ -6,17 +6,29 @@ import Logo from '../assets/icon.png';
 import { AxiosError } from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { setAuthToken } from '../axios/customAxios.ts';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const signIn = useSignIn();
+  const isAuthenticated = useIsAuthenticated();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, []);
 
   const handleLogin = (event) => {
     event.preventDefault();
 
     if (email && password) {
+      setIsLoading(true);
       AuthorizationService.login({ email, password })
         .then((response) => {
           if (response.status === 200) {
@@ -29,33 +41,23 @@ export default function LoginPage() {
               })
             ) {
               setAuthToken(response.data.token);
+              setIsLoading(false);
               navigate('/');
             }
           }
         })
         .catch((error: AxiosError) => {
           console.log(error);
+          setIsLoading(false);
         });
     }
   };
-  const handleForgotPassword = () => {
-    navigate('/forgot-password');
-  };
-
   const handleRegister = () => {
     navigate('/register');
   };
 
   return (
-    <Container
-      maxWidth='sm'
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <Container maxWidth='sm' sx={styles.container}>
       <Paper elevation={3} sx={{ p: 6, borderRadius: 3, width: '100%' }}>
         <Box textAlign='center' mb={3}>
           <Box
@@ -74,6 +76,7 @@ export default function LoginPage() {
 
         <Box component='form' onSubmit={handleLogin}>
           <TextField
+            disabled={isLoading}
             fullWidth
             label='Email address'
             margin='normal'
@@ -81,6 +84,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
+            disabled={isLoading}
             fullWidth
             label='Password'
             margin='normal'
@@ -89,24 +93,10 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Grid container justifyContent='space-between' mt={1}>
-            <Grid item>
+          <Grid container mt={1} justifyContent='center'>
+            <Grid item size='12'>
               <Button
-                type='button'
-                variant='text'
-                onClick={handleForgotPassword}
-                sx={{
-                  textTransform: 'none',
-                  p: 0,
-                  minWidth: 0,
-                  fontSize: '0.875rem',
-                }}
-              >
-                Forgot your password?
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
+                fullWidth
                 type='button'
                 variant='text'
                 onClick={handleRegister}
@@ -115,14 +105,18 @@ export default function LoginPage() {
                   p: 0,
                   minWidth: 0,
                   fontSize: '0.875rem',
+                  width: '100%',
                 }}
               >
-                Register
+                Create an Account
               </Button>
             </Grid>
           </Grid>
 
           <Button
+            disabled={isLoading}
+            loading={isLoading}
+            loadingPosition='center'
             type='submit'
             fullWidth
             variant='contained'
@@ -143,3 +137,12 @@ export default function LoginPage() {
     </Container>
   );
 }
+
+const styles = {
+  container: {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+};

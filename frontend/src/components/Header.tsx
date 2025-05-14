@@ -1,23 +1,31 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { JSX } from 'react';
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
 const Header = () => {
   // CHANGE: Check if the user is taking a quiz
   const isTakingAQuiz: boolean = false;
 
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    signOut();
+    navigate('/login');
+  };
+
   const renderMenuItems = (): JSX.Element =>
     isTakingAQuiz ? (
-      <Button component={NavLink} variant='contained' color='error' to='/dashboard'>
+      <Button component={NavLink} variant='contained' color='error' to='/'>
         Exit Quiz
       </Button>
     ) : (
       <>
-        <Button component={NavLink} color='text' size='medium' to='/dashboard'>
+        <Button component={NavLink} color='text' size='medium' to='/'>
           Dashboard
         </Button>
-        <Button component={NavLink} color='text' size='medium' to='/logout'>
+        <Button color='error' size='medium' onClick={handleLogout}>
           Logout
         </Button>
       </>

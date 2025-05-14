@@ -15,10 +15,14 @@ const Dashboard = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchCollections = () => {
     CollectionsService.getAll().then((response) => {
-      console.log(response.data);
+      setCollections(response.data);
     });
+  };
+
+  useEffect(() => {
+    fetchCollections();
   }, []);
 
   const totalQuestions = collections.reduce((total, item) => total + item.questionCount, 0);
@@ -28,7 +32,15 @@ const Dashboard = () => {
   const handleExportClick = () => {};
 
   const handleDeleteClick = (id: string) => {
-    CollectionsService.deleteById(id).then(() => {});
+    CollectionsService.deleteById(id)
+      .then((response) => {
+        if (response.status === 200) {
+          fetchCollections();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleUploadFileClick = () => {
