@@ -5,7 +5,10 @@ using FlashGenie.Infrastructure.Services.Interface;
 using FlashGenie.Presentation.Api.Middlewares;
 using FlashGenie.Presentation.Api.RegisterServices;
 using FlashGenie.Services.RegisterServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Headers;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,9 +44,26 @@ builder.Services.AddHttpClient<IGroqService, GroqService>(client =>
 {
     client.BaseAddress = new Uri("https://api.groq.com/");
     client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", "ADD API KEY HERE");
+        new AuthenticationHeaderValue("Bearer", "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");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
+
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+        };
+    });
 
 var app = builder.Build();
 
@@ -56,6 +76,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

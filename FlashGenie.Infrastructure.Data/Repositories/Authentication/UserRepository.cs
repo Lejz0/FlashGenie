@@ -39,5 +39,10 @@ namespace FlashGenie.Infrastructure.Data.Repositories.Authentication
             }
             return false;
         }
+
+        public async Task<FlashGenieUser> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
     }
 }

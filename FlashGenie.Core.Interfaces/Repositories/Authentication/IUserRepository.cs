@@ -9,5 +9,6 @@ namespace FlashGenie.Core.Interfaces.Repositories.Authentication
         Task<IdentityResult> RegisterAsync(FlashGenieUser user, string password);
         Task<SignInResult> LoginAsync(string email, string password);
         Task<bool> UserAlreadyExistsAsync(string email);
+        Task<FlashGenieUser> GetUserByEmailAsync (string email);
     }
 }

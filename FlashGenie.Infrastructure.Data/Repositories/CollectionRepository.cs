@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FlashGenie.Infrastructure.Data.Repositories
@@ -20,6 +19,11 @@ namespace FlashGenie.Infrastructure.Data.Repositories
             _context = context;
         }
 
+        public Collection Create(Collection collection)
+        {
+            return _context.Collections.Add(collection).Entity;
+        }
+
         public async Task<Collection> DeleteAsync(Guid id)
         {
             var collection = await GetByIdAsync(id);
@@ -29,33 +33,32 @@ namespace FlashGenie.Infrastructure.Data.Repositories
                 await _context.SaveChangesAsync();
             }
             return collection;
-
         }
 
         public async Task<IEnumerable<Collection>> GetAllAsync()
         {
             return await _context.Collections
-            .Include(c => c.User) // Include user relationship for context.
-            .Include(c => c.Questions) // Include related questions.
-            .ToListAsync();
-
+                .Include(c => c.User) 
+                .Include(c => c.Questions)
+                    .ThenInclude(q => q.Answers) 
+                .ToListAsync();
         }
 
         public async Task<Collection> GetByIdAsync(Guid id)
         {
             return await _context.Collections
-            .Include(c => c.User) // Include user relationship.
-            .Include(c => c.Questions) // Include related questions.
-            .FirstOrDefaultAsync(c => c.Id == id);
-
+                .Include(c => c.User) 
+                .Include(c => c.Questions)
+                    .ThenInclude(q => q.Answers) 
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<IEnumerable<Question>> GetQuestionsByCollectionIdAsync(Guid collectionId)
         {
             return await _context.Questions
-            .Where(q => q.CollectionId == collectionId) // Filter by CollectionId
-            .ToListAsync();
-
+                .Where(q => q.CollectionId == collectionId) 
+                .Include(q => q.Answers) 
+                .ToListAsync();
         }
     }
 }

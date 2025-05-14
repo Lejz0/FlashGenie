@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace FlashGenie.Core.DTOs.Response
 {
     public class CollectionResponseDTO
@@ -12,6 +7,6 @@ namespace FlashGenie.Core.DTOs.Response
         public string Name { get; set; }
         public int QuestionCount { get; set; }
         public string UserName { get; set; }
-        public IEnumerable<QuestionDTO> Questions { get; set; }
+        public IEnumerable<QuestionResponseDTO> Questions { get; set; }
     }
 }

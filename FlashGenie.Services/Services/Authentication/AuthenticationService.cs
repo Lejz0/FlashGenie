@@ -6,6 +6,11 @@ using FlashGenie.Core.Exceptions;
 using FlashGenie.Core.Interfaces.Repositories.Authentication;
 using FlashGenie.Services.Interfaces.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace FlashGenie.Services.Services.Authentication
 {
@@ -13,18 +18,42 @@ namespace FlashGenie.Services.Services.Authentication
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public AuthenticationService(IUserRepository _userRepository, IMapper _mapper)
+        private readonly IConfiguration _configuration;
+        public AuthenticationService(IUserRepository _userRepository, IMapper _mapper, IConfiguration configuration)
         {
             this._userRepository = _userRepository;
             this._mapper = _mapper;
+            this._configuration = configuration;
         }
-        public async Task<bool> LoginAsync(string email, string password)
+        public async Task<string> LoginAsync(string email, string password)
         {
             SignInResult result = await _userRepository.LoginAsync(email, password);
-            if (!result.Succeeded) {
+
+            if (!result.Succeeded)
+            {
                 throw new EmailOrPasswordIncorrectException("Email or password incorrect.");
             }
-            return result.Succeeded;
+
+            var user = await _userRepository.GetUserByEmailAsync(email);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Email)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public async Task<bool> RegisterAsync(FlashGenieUserRequestDTO registerUser)

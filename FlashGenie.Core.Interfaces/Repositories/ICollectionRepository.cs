@@ -15,6 +15,6 @@ namespace FlashGenie.Core.Interfaces.Repositories
         Task<Collection> GetByIdAsync(Guid id); // Fetch one collection by ID
         Task<Collection> DeleteAsync(Guid id); // Delete a collection
         Task<IEnumerable<Question>> GetQuestionsByCollectionIdAsync(Guid collectionId); // Get all questions from a collection
-
+        Collection Create(Collection collection);
     }
 }

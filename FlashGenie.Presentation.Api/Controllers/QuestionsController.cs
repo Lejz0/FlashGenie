@@ -1,18 +1,22 @@
 ﻿using FlashGenie.Core.DTOs.Request;
-using FlashGenie.Infrastructure.Services.Interface;
+using FlashGenie.Core.DTOs.Response;
+using FlashGenie.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FlashGenie.Presentation.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionsController : ControllerBase
     {
-        private readonly IGroqService _groqService;
+        private readonly ICollectionService _collectionService;
 
-        public QuestionsController(IGroqService groqService)
+        public QuestionsController(ICollectionService collectionService)
         {
-            _groqService = groqService;
+            _collectionService = collectionService;
         }
 
         [HttpPost("generate")]
@@ -23,7 +27,12 @@ namespace FlashGenie.Presentation.Api.Controllers
                 return BadRequest("Text is required.");
             }
 
-            var response = await _groqService.GenerateQuestionsAsync(request.Text, 10);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+                return Unauthorized();
+
+            CollectionResponseDTO response = await _collectionService.GenerateQuestionsAsync(request.Text, userId);
             return Ok(response);
         }
     }

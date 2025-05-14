@@ -1,8 +1,9 @@
-﻿using FlashGenie.Core.DTOs.Response;
+﻿using FlashGenie.Core.DTOs.Request;
 using FlashGenie.Infrastructure.Services.Interface;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace FlashGenie.Infrastructure.Services.Implementation
 {
@@ -17,7 +18,7 @@ namespace FlashGenie.Infrastructure.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<GroqQuestionResponseDTO> GenerateQuestionsAsync(string content, int questionCount = 10)
+        public async Task<CollectionRequestDTO> GenerateQuestionsAsync(string content, int questionCount = 10)
         {
             var prompt = GenerateBasePrompt(content, questionCount);
 
@@ -26,8 +27,8 @@ namespace FlashGenie.Infrastructure.Services.Implementation
                 model = "meta-llama/llama-4-scout-17b-16e-instruct",
                 messages = new[]
                 {
-            new { role = "user", content = prompt }
-        }
+                    new { role = "user", content = prompt }
+                }
             };
 
             try
@@ -35,21 +36,34 @@ namespace FlashGenie.Infrastructure.Services.Implementation
                 var response = await _httpClient.PostAsJsonAsync("/openai/v1/chat/completions", payload);
                 response.EnsureSuccessStatusCode();
 
-                var result = await response.Content.ReadFromJsonAsync<GroqApiResponseDTO>();
-                var jsonContent = result?.Choices?.FirstOrDefault()?.Message?.Content;
+                var result = await response.Content.ReadFromJsonAsync<OpenAIResponse>();
+                if (result?.Choices == null || result.Choices.Length == 0 || string.IsNullOrWhiteSpace(result.Choices[0].Message.Content))
+                    throw new Exception("Empty or invalid response from Groq.");
 
+                var jsonContent = result.Choices[0].Message.Content;
+
+                jsonContent = CleanJsonResponse(jsonContent);
                 if (string.IsNullOrWhiteSpace(jsonContent))
-                    throw new Exception("Empty response from Groq.");
+                    throw new Exception("Cleaned JSON response is empty.");
 
-                string extractedJson = ExtractJsonFromResponse(jsonContent);
-
-                var options = new JsonSerializerOptions
+                var collection = JsonSerializer.Deserialize<CollectionRequestDTO>(jsonContent, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
-                };
+                });
 
-                var questions = JsonSerializer.Deserialize<List<GeneratedQuestionDTO>>(extractedJson, options);
-                return new GroqQuestionResponseDTO { Questions = questions };
+                if (collection == null)
+                    throw new Exception("Failed to deserialize response into CollectionRequestDTO.");
+
+                foreach (var question in collection.Questions)
+                {
+                    var questionId = Guid.NewGuid();
+                    foreach (var answer in question.Answers)
+                    {
+                        answer.QuestionId = questionId;
+                    }
+                }
+
+                return collection;
             }
             catch (Exception ex)
             {
@@ -58,66 +72,87 @@ namespace FlashGenie.Infrastructure.Services.Implementation
             }
         }
 
-        private string ExtractJsonFromResponse(string response)
+        private string CleanJsonResponse(string content)
         {
-            int startIndex = response.IndexOf('[');
-            int endIndex = response.LastIndexOf(']');
+            if (string.IsNullOrWhiteSpace(content))
+                return content;
 
-            if (startIndex >= 0 && endIndex > startIndex)
-            {
-                return response.Substring(startIndex, endIndex - startIndex + 1);
-            }
+            content = Regex.Replace(content, @"^```json\s*|\s*```$", "", RegexOptions.Multiline);
+            content = content.Trim('`');
+            content = content.Trim();
 
-
-            startIndex = response.IndexOf("```");
-            if (startIndex >= 0)
-            {
-                startIndex = response.IndexOf('[', startIndex);
-                if (startIndex >= 0 && endIndex > startIndex)
-                {
-                    return response.Substring(startIndex, endIndex - startIndex + 1);
-                }
-            }
-
-            return response;
+            return content;
         }
 
         private string GenerateBasePrompt(string content, int questionCount)
         {
             return $@"
-            Generate {questionCount} quiz questions based on the content provided below. Each question should be one of the following types:
-            - SINGLE_CHOICE
-            - MULTIPLE_CHOICE
-            - TRUE_FALSE
+                Generate a JSON object containing a quiz collection with the following structure:
+                - name: (string) the name of the quiz collection
+                - questionCount: (int) the number of questions
+                - userId: (string) a placeholder user ID (e.g., 'default-user')
+                - questions: an array of questions (as described below)
 
-            For each question, return:
-            - `type` (one of the three types above)
-            - `question` (the text of the question)
-            - `choices` (array of possible answers; TRUE_FALSE must be [""True"", ""False""])
-            - `answers` (array of correct answers)
+                Each question must contain:
+                - type: one of 'SINGLE_CHOICE', 'MULTIPLE_CHOICE', or 'TRUE_FALSE'
+                - question: (string) the text of the question
+                - answers: an array of answer objects, each with:
+                  - text: (string) the answer text
+                  - isCorrect: (boolean) whether the answer is correct
+                  - displayOrder: (int) the display order of the answer (0-based index)
 
-            IMPORTANT: Your ENTIRE response should be ONLY a valid JSON array. Do not include any explanatory text, markdown formatting, or backticks before or after the JSON. Just return the raw JSON array and nothing else.
+                For TRUE_FALSE questions, answers must be exactly two entries: one for 'True' and one for 'False', with appropriate isCorrect values.
 
-            Example of what your entire response should look like:
-            [
-              {{
-                ""type"": ""SINGLE_CHOICE"",
-                ""question"": ""What is the capital of France?"",
-                ""choices"": [""Paris"", ""London"", ""Rome"", ""Berlin""],
-                ""answers"": [""Paris""]
-              }},
-              {{
-                ""type"": ""MULTIPLE_CHOICE"",
-                ""question"": ""Which of the following are programming languages?"",
-                ""choices"": [""Python"", ""HTML"", ""C#"", ""CSS""],
-                ""answers"": [""Python"", ""C#""]
-              }}
-            ]
+                Generate exactly {questionCount} questions based on the provided content.
+                IMPORTANT: Return ONLY a valid JSON object, and nothing else. No markdown, no explanation, no backticks.
 
-            Here is the content to use:
-            ---
-            {content}
-            ";
+                Here is an example of the required structure:
+                {{
+                    ""name"": ""Generated Quiz"",
+                    ""questionCount"": 2,
+                    ""userId"": ""default-user"",
+                    ""questions"": [
+                        {{
+                            ""type"": ""SINGLE_CHOICE"",
+                            ""question"": ""What is the capital of France?"",
+                            ""answers"": [
+                                {{ ""text"": ""Paris"", ""isCorrect"": true, ""displayOrder"": 0 }},
+                                {{ ""text"": ""London"", ""isCorrect"": false, ""displayOrder"": 1 }},
+                                {{ ""text"": ""Rome"", ""isCorrect"": false, ""displayOrder"": 2 }},
+                                {{ ""text"": ""Berlin"", ""isCorrect"": false, ""displayOrder"": 3 }}
+                            ]
+                        }},
+                        {{
+                            ""type"": ""TRUE_FALSE"",
+                            ""question"": ""Is the Earth flat?"",
+                            ""answers"": [
+                                {{ ""text"": ""True"", ""isCorrect"": false, ""displayOrder"": 0 }},
+                                {{ ""text"": ""False"", ""isCorrect"": true, ""displayOrder"": 1 }}
+                            ]
+                        }}
+                    ]
+                }}
+
+                Here is the content to generate questions from:
+                ---
+                {content}
+                ---
+                ";
+        }
+
+        private class OpenAIResponse
+        {
+            public OpenAIChoice[] Choices { get; set; }
+        }
+
+        private class OpenAIChoice
+        {
+            public OpenAIMessage Message { get; set; }
+        }
+
+        private class OpenAIMessage
+        {
+            public string Content { get; set; }
         }
     }
 }

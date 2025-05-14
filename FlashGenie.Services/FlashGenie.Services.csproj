@@ -8,12 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.16" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FlashGenie.Core.Entities\FlashGenie.Core.Entities.csproj" />
     <ProjectReference Include="..\FlashGenie.Core.Interfaces\FlashGenie.Core.Interfaces.csproj" />
     <ProjectReference Include="..\FlashGenie.Core\FlashGenie.Core.csproj" />
+    <ProjectReference Include="..\FlashGenie.Infrastructure.Services\FlashGenie.Infrastructure.Services.csproj" />
     <ProjectReference Include="..\FlashGenie.Services.Interfaces\FlashGenie.Services.Interfaces.csproj" />
   </ItemGroup>
 

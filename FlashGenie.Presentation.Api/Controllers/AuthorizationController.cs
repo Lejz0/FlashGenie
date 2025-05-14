@@ -18,8 +18,8 @@ namespace FlashGenie.Presentation.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
         {
-            bool result = await _authenticationService.LoginAsync(loginRequest.Email, loginRequest.Password);
-            return Ok("Login successful.");
+            string token = await _authenticationService.LoginAsync(loginRequest.Email, loginRequest.Password);
+            return Ok(new { token });
         }
 
         [HttpPost("register")]

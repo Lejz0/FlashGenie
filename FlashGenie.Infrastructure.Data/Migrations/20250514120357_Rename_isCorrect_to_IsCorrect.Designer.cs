@@ -4,6 +4,7 @@ using FlashGenie.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlashGenie.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(FlashGenieDbContext))]
-    partial class FlashGenieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514120357_Rename_isCorrect_to_IsCorrect")]
+    partial class Rename_isCorrect_to_IsCorrect
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

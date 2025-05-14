@@ -1,10 +1,10 @@
-﻿using FlashGenie.Core.Entities.Entities.Base;
-using FlashGenie.Services.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
+﻿using FlashGenie.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlashGenie.Presentation.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CollectionController : ControllerBase

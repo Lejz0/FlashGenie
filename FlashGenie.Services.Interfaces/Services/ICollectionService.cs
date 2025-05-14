@@ -14,7 +14,7 @@ namespace FlashGenie.Services.Interfaces.Services
         Task<IEnumerable<CollectionResponseDTO>> GetAllCollectionsAsync(); // Fetch all collections.
         Task<CollectionResponseDTO> GetCollectionByIdAsync(Guid id); // Fetch a collection by ID.
         Task<CollectionResponseDTO> DeleteCollectionAsync(Guid id); // Delete a collection and return it.
-        Task<IEnumerable<QuestionDTO>> GetQuestionsByCollectionIdAsync(Guid collectionId); // Retrieve questions from a collection.
-
+        Task<IEnumerable<QuestionResponseDTO>> GetQuestionsByCollectionIdAsync(Guid collectionId); // Retrieve questions from a collection.
+        Task<CollectionResponseDTO> GenerateQuestionsAsync(string text, string userId);
     }
 }
