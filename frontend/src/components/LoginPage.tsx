@@ -4,11 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import AuthorizationService from '../services/AuthorizationService.ts';
 import Logo from '../assets/icon.png';
 import { AxiosError } from 'axios';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import { setAuthToken } from '../axios/customAxios.ts';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const signIn = useSignIn();
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -16,7 +19,19 @@ export default function LoginPage() {
     if (email && password) {
       AuthorizationService.login({ email, password })
         .then((response) => {
-          console.log(response.data);
+          if (response.status === 200) {
+            if (
+              signIn({
+                auth: {
+                  token: response.data.token,
+                  type: 'Bearer',
+                },
+              })
+            ) {
+              setAuthToken(response.data.token);
+              navigate('/');
+            }
+          }
         })
         .catch((error: AxiosError) => {
           console.log(error);

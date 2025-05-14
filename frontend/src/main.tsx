@@ -2,7 +2,14 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './components/App';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
+import createStore from 'react-auth-kit/createStore';
+import AuthProvider from 'react-auth-kit';
+
+const authStore = createStore({
+  authName: '_auth',
+  authType: 'localstorage',
+});
 
 const theme = createTheme({
   palette: {
@@ -41,8 +48,10 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
   <ThemeProvider theme={theme}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <AuthProvider store={authStore}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthProvider>
   </ThemeProvider>,
 );

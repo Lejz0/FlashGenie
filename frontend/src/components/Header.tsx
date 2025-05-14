@@ -1,6 +1,6 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
-import { NavLink } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import { JSX } from 'react';
 
 const Header = () => {
