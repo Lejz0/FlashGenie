@@ -3,6 +3,7 @@ import './index.css';
 import App from './components/App';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import RegisterPage from './components/RegisterPage.tsx';
 import LoginPage from './components/LoginPage.tsx';
 import LogoutPage from './components/LogoutPage.tsx';
 import ErrorPage from './components/ErrorPage.tsx';
@@ -45,6 +46,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path='/' element={<Navigate to={'/dashboard'} />} />
         <Route path='/dashboard' element={<App />} />
+        <Route path='/register' element={<RegisterPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/logout' element={<LogoutPage />} />
         <Route path='*' element={<ErrorPage />} />
