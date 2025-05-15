@@ -1,10 +1,11 @@
 ﻿using FlashGenie.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlashGenie.Presentation.Api.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class CollectionController : ControllerBase
