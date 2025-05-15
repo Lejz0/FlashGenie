@@ -1,133 +1,125 @@
-import React from 'react';
-import {
-    Box,
-    Typography,
-    Button,
-    Grid,
-    Card,
-    CardContent,
-    Stack
-} from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CollectionItem from './CollectionItem.tsx';
+import { useEffect, useState } from 'react';
+import CollectionsService from '../services/CollectionsService.ts';
+import { useNavigate } from 'react-router-dom';
 
-const collections = [
-    {
-        name: 'Physics_101.pdf',
-        created: '2025-03-24',
-        questions: 15
-    },
-    {
-        name: 'Machine_Learning_Basics.pdf',
-        created: '2025-03-22',
-        questions: 12
-    },
-    {
-        name: 'History_of_Art.pdf',
-        created: '2025-03-20',
-        questions: 17
-    }
-];
+interface Collection {
+  id: string;
+  name: string;
+  questionCount: number;
+}
 
 const Dashboard = () => {
-    const totalQuestions = collections.reduce((acc, curr) => acc + curr.questions, 0);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const navigate = useNavigate();
 
-    const handleTakeQuiz = () => {
-        window.open('/quiz', '_blank');
-    };
+  const fetchCollections = () => {
+    CollectionsService.getAll().then((response) => {
+      setCollections(response.data);
+    });
+  };
 
-    return (
-        <Box
-            sx={{
-                minHeight: '100vh',
-                width: '100vw',
-                bgcolor: '#ffffff',
-                color: '#000000',
-                p: { xs: 2, md: 4 },
-            }}
-        >
+  useEffect(() => {
+    fetchCollections();
+  }, []);
 
+  const totalQuestions = collections.reduce((total, item) => total + item.questionCount, 0);
 
-            <Grid container spacing={4} justifyContent="center" mb={5}>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Box
-                        sx={{
-                            p: 4,
-                            bgcolor: '#e3f2fd',
-                            borderRadius: 4,
-                            textAlign: 'center',
-                            boxShadow: 3,
-                        }}
-                    >
-                        <Typography variant="h6" color="primary" gutterBottom>
-                            Collections
-                        </Typography>
-                        <Typography variant="h2" fontWeight="bold">
-                            {collections.length}
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Box
-                        sx={{
-                            p: 4,
-                            bgcolor: '#e8f5e9',
-                            borderRadius: 4,
-                            textAlign: 'center',
-                            boxShadow: 3,
-                        }}
-                    >
-                        <Typography variant="h6" color="success.main" gutterBottom>
-                            Total Questions
-                        </Typography>
-                        <Typography variant="h2" fontWeight="bold">
-                            {totalQuestions}
-                        </Typography>
-                    </Box>
-                </Grid>
-            </Grid>
+  const handleTakeQuizClick = () => {};
 
-            <Button variant="contained" fullWidth sx={{ mb: 4 }}>
-                Upload PDF
-            </Button>
+  const handleExportClick = () => {};
 
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-                Your Quiz Collections
+  const handleDeleteClick = (id: string) => {
+    CollectionsService.deleteById(id)
+      .then((response) => {
+        if (response.status === 200) {
+          fetchCollections();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleUploadFileClick = () => {
+    navigate('/generate');
+  };
+
+  const renderCollectionItems = () => {
+    return collections.map((item) => (
+      <CollectionItem
+        key={item.id}
+        id={item.id}
+        name={item.name}
+        questionsCount={item.questionCount}
+        handleTakeQuizClick={handleTakeQuizClick}
+        handleExportClick={handleExportClick}
+        handleDeleteClick={() => handleDeleteClick(item.id)}
+      />
+    ));
+  };
+
+  return (
+    <>
+      <Box sx={styles.container}>
+        <Typography variant='h6' sx={{ marginBottom: 2 }}>
+          Your Collections
+        </Typography>
+        <Box sx={styles.collectionsSummaryContainer}>
+          <Box sx={{ ...styles.collectionsSummaryItem, backgroundColor: '#c1d2f8' }}>
+            <Typography fontWeight='medium'>Collections</Typography>
+            <Typography fontWeight='bold' variant='h5'>
+              {collections.length}
             </Typography>
-
-            <Stack spacing={2}>
-                {collections.map((collection, index) => (
-                    <Card
-                        key={index}
-                        variant="outlined"
-                        sx={{
-                            bgcolor: '#fafafa',
-                            width: '100%',
-                            boxShadow: 1,
-                        }}
-                    >
-                        <CardContent>
-                            <Typography variant="subtitle1" fontWeight="bold">
-                                {collection.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Created: {collection.created} — {collection.questions} questions
-                            </Typography>
-                            <Box mt={2} display="flex" gap={1} flexWrap="wrap">
-                                <Button variant="contained" size="small" onClick={handleTakeQuiz}>
-                                    Take Quiz
-                                </Button>
-                                <Button variant="outlined" size="small">
-                                    Export
-                                </Button>
-                                <Button variant="outlined" color="error" size="small">
-                                    Delete
-                                </Button>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                ))}
-            </Stack>
+          </Box>
+          <Box sx={{ ...styles.collectionsSummaryItem, backgroundColor: 'secondary.main' }}>
+            <Typography fontWeight='medium'>Total Questions</Typography>
+            <Typography fontWeight='bold' variant='h5'>
+              {totalQuestions}
+            </Typography>
+          </Box>
         </Box>
-    );
+      </Box>
+      <Box sx={styles.container}>
+        <Button
+          fullWidth
+          variant='contained'
+          disableElevation
+          startIcon={<CloudUploadIcon />}
+          sx={{ padding: 1 }}
+          onClick={handleUploadFileClick}
+        >
+          Upload File (PDF, Word)
+        </Button>
+      </Box>
+      <Box sx={styles.container}>
+        <Typography variant='h6' sx={{ marginBottom: 2 }}>
+          Your Quiz Collections
+        </Typography>
+        <Stack direction='column' spacing={1}>
+          <>{renderCollectionItems()}</>
+        </Stack>
+      </Box>
+    </>
+  );
 };
 
+const styles = {
+  container: {
+    padding: 3,
+    backgroundColor: 'background',
+    boxShadow: 2,
+    borderRadius: 2,
+    width: '100%',
+  },
+  collectionsSummaryContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 4,
+  },
+  collectionsSummaryItem: { padding: 3, borderRadius: 3, flex: 1 },
+};
 export default Dashboard;

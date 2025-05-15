@@ -1,18 +1,30 @@
-import MainContent from './MainContent.tsx';
-import Header from './Header.tsx';
-import { Box } from '@mui/material';
-
+import Dashboard from './Dashboard.tsx';
+import { Route, Routes } from 'react-router';
+import LoginPage from './LoginPage.tsx';
+import ErrorPage from './ErrorPage.tsx';
+import Layout from './Layout.tsx';
+import UploadFilePage from './UploadFilePage.tsx';
+import RegisterPage from './RegisterPage.tsx';
+import RequireAuth from '@auth-kit/react-router/RequireAuth';
 function App() {
   return (
-    <Box sx={styles.layout}>
-      <Header />
-      <MainContent />
-    </Box>
+    <Routes>
+      <Route
+        path='/'
+        element={
+          <RequireAuth fallbackPath={'/login'}>
+            <Layout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path='/generate' element={<UploadFilePage />} />
+      </Route>
+      <Route path='/login' element={<LoginPage />} />
+      <Route path='/register' element={<RegisterPage />} />
+      <Route path='*' element={<ErrorPage />} />
+    </Routes>
   );
 }
-
-const styles = {
-  layout: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
-};
 
 export default App;

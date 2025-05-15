@@ -1,30 +1,48 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
-import { NavLink } from 'react-router';
-import { JSX } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
 const Header = () => {
-  // CHANGE: Check if the user is taking a quiz
-  const isTakingAQuiz: boolean = false;
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    signOut();
+    navigate('/login');
+  };
 
-  const renderMenuItems = (): JSX.Element =>
-    isTakingAQuiz ? (
-      <Button component={NavLink} variant='contained' color='error' to='/dashboard'>
+  const renderMenuItems = () => {
+    const path = window.location.pathname;
+    return path == '/quiz' ? (
+      <Button component={NavLink} variant='contained' color='error' to='/'>
         Exit Quiz
       </Button>
     ) : (
       <>
-        <Button component={NavLink} color='secondary' size='medium' to='/dashboard'>
+        <Button
+          component={NavLink}
+          color='text'
+          size='medium'
+          to='/'
+          sx={{
+            '&.active': {
+              fontWeight: 'bold',
+              color: 'blue',
+            },
+          }}
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           Dashboard
         </Button>
-        <Button component={NavLink} color='secondary' size='medium' to='/logout'>
+        <Button color='error' size='medium' onClick={handleLogout}>
           Logout
         </Button>
       </>
     );
+  };
 
   return (
-    <AppBar component='nav' position='static'>
+    <AppBar component='nav' position='static' color='primary.contrastText' sx={styles.appBar}>
       <Toolbar>
         <Box sx={styles.navbarContainer}>
           <Box sx={styles.logoAndTextWrapper}>
@@ -46,6 +64,7 @@ const Header = () => {
 };
 
 const styles = {
+  appBar: { boxShadow: 3, marginBottom: 4 },
   navbarContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -57,7 +76,7 @@ const styles = {
   logo: {
     height: '44px',
   },
-  logoText: { fontWeight: '800', pl: 1 },
+  logoText: { fontWeight: '800', paddingLeft: 1 },
   menuWrapper: {
     display: 'flex',
     justifyContent: 'flex-end',
