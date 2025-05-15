@@ -22,7 +22,7 @@ export default function LoginPage() {
     if (isAuthenticated) {
       navigate('/');
     }
-  });
+  }, []);
 
   const handleLogin = (event) => {
     event.preventDefault();

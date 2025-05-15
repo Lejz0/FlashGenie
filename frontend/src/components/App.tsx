@@ -6,6 +6,8 @@ import Layout from './Layout.tsx';
 import UploadFilePage from './UploadFilePage.tsx';
 import RegisterPage from './RegisterPage.tsx';
 import RequireAuth from '@auth-kit/react-router/RequireAuth';
+import ExportPage from './ExportPage.tsx';
+
 function App() {
   return (
     <Routes>
@@ -19,6 +21,7 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path='/generate' element={<UploadFilePage />} />
+        <Route path='export/:id' element={<ExportPage />} />
       </Route>
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
