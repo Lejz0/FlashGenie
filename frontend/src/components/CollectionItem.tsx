@@ -23,13 +23,23 @@ const CollectionItem = (props: CollectionItemProps) => {
         <Typography color='text.secondary'>{questionsCount} Questions</Typography>
       </Box>
       <Box sx={styles.buttonsContainer}>
-        <Button disableElevation variant='contained' onClick={handleTakeQuizClick}>
+        <Button
+          sx={styles.button}
+          disableElevation
+          variant='contained'
+          onClick={handleTakeQuizClick}
+        >
           Take quiz
         </Button>
-        <Button variant='outlined' color='text.main' onClick={handleExportClick}>
+        <Button sx={styles.button} variant='outlined' color='text.main' onClick={handleExportClick}>
           Export
         </Button>
-        <Button variant='outlined' color='error' onClick={() => handleDeleteClick(id)}>
+        <Button
+          sx={styles.button}
+          variant='outlined'
+          color='error'
+          onClick={() => handleDeleteClick(id)}
+        >
           Delete
         </Button>
       </Box>
@@ -47,6 +57,9 @@ const styles = {
     justifyContent: 'space-between',
   },
   buttonsContainer: { display: 'flex', flexDirection: 'row', gap: 1 },
+  button: {
+    textTransform: 'none',
+  },
 };
 
 export default CollectionItem;

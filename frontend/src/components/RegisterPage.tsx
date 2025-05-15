@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Container, Paper, TextField, Typography, Grid } from '@mui/material';
+import { Box, Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import icon from '../assets/icon.png';
 import AuthorizationService from '../services/AuthorizationService.ts';
@@ -20,7 +20,7 @@ export default function RegisterPage() {
     if (isAuthenticated) {
       navigate('/');
     }
-  });
+  }, []);
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();

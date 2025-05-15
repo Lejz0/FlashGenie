@@ -112,7 +112,7 @@ const UploadFilePage = () => {
   return (
     <>
       <Box sx={styles.container}>
-        <Box sx={styles.containerTitleContainer}>
+        <Box sx={styles.titleContainer}>
           <Typography variant='h4' fontWeight='bold'>
             Upload Document File (PDF, Word)
           </Typography>
@@ -179,7 +179,7 @@ const styles = {
     alignItems: 'center',
     gap: 4,
   },
-  containerTitleContainer: {
+  titleContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -193,7 +193,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
   },
-  button: { padding: 1, width: '90%' },
+  button: { padding: 1, width: '90%', textTransform: 'capitalize' },
 };
 
 const VisuallyHiddenInput = styled('input')({

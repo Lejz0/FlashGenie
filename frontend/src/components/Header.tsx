@@ -1,23 +1,37 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
 const Header = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();
+  const location = useLocation();
   const handleLogout = () => {
     signOut();
     navigate('/login');
   };
 
   const renderMenuItems = () => {
-    const path = window.location.pathname;
-    return path == '/quiz' ? (
-      <Button component={NavLink} variant='contained' color='error' to='/'>
-        Exit Quiz
-      </Button>
-    ) : (
+    const path = location.pathname;
+
+    if (path === '/quiz') {
+      return (
+        <Button component={NavLink} variant='contained' color='error' to='/'>
+          Exit Quiz
+        </Button>
+      );
+    }
+
+    if (path.includes('/export')) {
+      return (
+        <Button color='error' size='medium' onClick={handleLogout}>
+          Logout
+        </Button>
+      );
+    }
+
+    return (
       <>
         <Button
           component={NavLink}

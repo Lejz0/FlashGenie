@@ -1,9 +1,9 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CollectionItem from './CollectionItem.tsx';
 import { useEffect, useState } from 'react';
 import CollectionsService from '../services/CollectionsService.ts';
 import { useNavigate } from 'react-router-dom';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 
 interface Collection {
   id: string;
@@ -29,7 +29,9 @@ const Dashboard = () => {
 
   const handleTakeQuizClick = () => {};
 
-  const handleExportClick = () => {};
+  const handleExportClick = (id: string) => {
+    navigate(`/export/${id}`);
+  };
 
   const handleDeleteClick = (id: string) => {
     CollectionsService.deleteById(id)
@@ -55,7 +57,7 @@ const Dashboard = () => {
         name={item.name}
         questionsCount={item.questionCount}
         handleTakeQuizClick={handleTakeQuizClick}
-        handleExportClick={handleExportClick}
+        handleExportClick={() => handleExportClick(item.id)}
         handleDeleteClick={() => handleDeleteClick(item.id)}
       />
     ));
@@ -68,14 +70,18 @@ const Dashboard = () => {
           Your Collections
         </Typography>
         <Box sx={styles.collectionsSummaryContainer}>
-          <Box sx={{ ...styles.collectionsSummaryItem, backgroundColor: '#c1d2f8' }}>
-            <Typography fontWeight='medium'>Collections</Typography>
+          <Box sx={{ ...styles.collectionsSummaryItem, backgroundColor: '#EFF6FF' }}>
+            <Typography fontWeight='medium' color='#3a86f0'>
+              Collections
+            </Typography>
             <Typography fontWeight='bold' variant='h5'>
               {collections.length}
             </Typography>
           </Box>
           <Box sx={{ ...styles.collectionsSummaryItem, backgroundColor: 'secondary.main' }}>
-            <Typography fontWeight='medium'>Total Questions</Typography>
+            <Typography fontWeight='medium' color='#1AA583'>
+              Total Questions
+            </Typography>
             <Typography fontWeight='bold' variant='h5'>
               {totalQuestions}
             </Typography>
@@ -87,8 +93,8 @@ const Dashboard = () => {
           fullWidth
           variant='contained'
           disableElevation
-          startIcon={<CloudUploadIcon />}
-          sx={{ padding: 1 }}
+          startIcon={<FileUploadOutlinedIcon style={{ width: '25px', height: '25px' }} />}
+          sx={{ padding: 1.5, fontSize: '1rem', textTransform: 'none' }}
           onClick={handleUploadFileClick}
         >
           Upload File (PDF, Word)
