@@ -1,11 +1,9 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { JSX, useEffect } from 'react';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
 const Header = () => {
-
   const signOut = useSignOut();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -13,7 +11,7 @@ const Header = () => {
     navigate('/login');
   };
 
-  const renderMenuItems = ()  => {
+  const renderMenuItems = () => {
     const path = window.location.pathname;
     return path == '/quiz' ? (
       <Button component={NavLink} variant='contained' color='error' to='/'>
@@ -21,20 +19,27 @@ const Header = () => {
       </Button>
     ) : (
       <>
-        <Button component={NavLink} color='text' size='medium' to='/'   sx={{
-          '&.active': {
-            fontWeight: 'bold',
-            color: 'blue',
-          }
-        }}
-                className={({ isActive }) => isActive ? 'active' : ''}>
+        <Button
+          component={NavLink}
+          color='text'
+          size='medium'
+          to='/'
+          sx={{
+            '&.active': {
+              fontWeight: 'bold',
+              color: 'blue',
+            },
+          }}
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           Dashboard
         </Button>
         <Button color='error' size='medium' onClick={handleLogout}>
           Logout
         </Button>
       </>
-    )};
+    );
+  };
 
   return (
     <AppBar component='nav' position='static' color='primary.contrastText' sx={styles.appBar}>
