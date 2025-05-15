@@ -106,6 +106,7 @@ export default function LoginPage() {
                   minWidth: 0,
                   fontSize: '0.875rem',
                   width: '100%',
+                  color: 'blue'
                 }}
               >
                 Create an Account
