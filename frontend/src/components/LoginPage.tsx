@@ -22,7 +22,7 @@ export default function LoginPage() {
     if (isAuthenticated) {
       navigate('/');
     }
-  }, []);
+  });
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -106,7 +106,7 @@ export default function LoginPage() {
                   minWidth: 0,
                   fontSize: '0.875rem',
                   width: '100%',
-                  color: 'blue'
+                  color: 'blue',
                 }}
               >
                 Create an Account
