@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -11,15 +11,25 @@ import {
 import { useNavigate } from 'react-router-dom';
 import icon from '../assets/icon.png'
 import AuthorizationService from '../services/AuthorizationService.ts';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
+    const isAuthenticated = useIsAuthenticated();
+
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, []);
 
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
