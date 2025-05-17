@@ -2,6 +2,7 @@
 using FlashGenie.Core.DTOs.Request;
 using FlashGenie.Core.DTOs.Response;
 using FlashGenie.Core.Entities.Entities;
+using FlashGenie.Core.Entities.Entities.Identity;
 
 namespace FlashGenie.Core.Mapping
 {
@@ -39,6 +40,9 @@ namespace FlashGenie.Core.Mapping
                 .ForMember(dest => dest.IsCorrect, opt => opt.MapFrom(src => src.IsCorrect))
                 .ForMember(dest => dest.DisplayOrder, opt => opt.MapFrom(src => src.DisplayOrder))
                 .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.QuestionId));
+
+            CreateMap<FlashGenieUserRequestDTO, FlashGenieUser>()
+               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
         }
     }
 }
