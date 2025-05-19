@@ -15,7 +15,7 @@ const Header = () => {
   const renderMenuItems = () => {
     const path = location.pathname;
 
-    if (path === '/quiz') {
+    if (path.includes('/quiz/')) {
       return (
         <Button component={NavLink} variant='contained' color='error' to='/'>
           Exit Quiz

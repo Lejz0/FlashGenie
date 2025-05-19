@@ -5,7 +5,7 @@ interface CollectionItemProps {
   name: string;
   questionsCount: number;
 
-  handleTakeQuizClick(): void;
+  handleTakeQuizClick(id: string): void;
 
   handleExportClick(): void;
 
@@ -27,7 +27,7 @@ const CollectionItem = (props: CollectionItemProps) => {
           sx={styles.button}
           disableElevation
           variant='contained'
-          onClick={handleTakeQuizClick}
+          onClick={() => handleTakeQuizClick(id)}
         >
           Take quiz
         </Button>

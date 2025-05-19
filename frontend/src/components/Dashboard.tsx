@@ -27,7 +27,9 @@ const Dashboard = () => {
 
   const totalQuestions = collections.reduce((total, item) => total + item.questionCount, 0);
 
-  const handleTakeQuizClick = () => {};
+  const handleTakeQuizClick = (id: string) => {
+    navigate(`/quiz/${id}`);
+  };
 
   const handleExportClick = (id: string) => {
     navigate(`/export/${id}`);
@@ -56,7 +58,7 @@ const Dashboard = () => {
         id={item.id}
         name={item.name}
         questionsCount={item.questionCount}
-        handleTakeQuizClick={handleTakeQuizClick}
+        handleTakeQuizClick={() => handleTakeQuizClick(item.id)}
         handleExportClick={() => handleExportClick(item.id)}
         handleDeleteClick={() => handleDeleteClick(item.id)}
       />
