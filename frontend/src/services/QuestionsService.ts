@@ -4,6 +4,9 @@ const QuestionsService = {
   generate(data) {
     return axiosInstance.post('/Questions/generate', data);
   },
+  getQuestionsByCollectionId(id: string) {
+    return axiosInstance.get(`/Collection/${id}/questions`);
+  },
 };
 
 export default QuestionsService;
