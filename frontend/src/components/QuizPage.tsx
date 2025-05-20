@@ -6,25 +6,24 @@ import {
   CardContent,
   CircularProgress,
   Container,
-  Typography,
   LinearProgress,
-  Stack
+  Stack,
+  Typography,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import CollectionsService from '../services/CollectionsService';
-import { mockQuestions } from '../mocks/mockQuestions'
+import QuestionsService from '../services/QuestionsService.ts';
 
 type Question = {
-  questionText: string;
-  options: { text: string; isCorrect: boolean; }[];
+  text: string;
+  answers: { text: string; isCorrect: boolean }[];
 };
 
 const QuizPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<
-  Record<number, { selected: string; isCorrect: boolean }>
->({});
+    Record<number, { selected: string; isCorrect: boolean }>
+  >({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -33,11 +32,11 @@ const QuizPage: React.FC = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        // const collection = await CollectionsService.getById(id!);
-        // setQuestions(collection.data);
-        setQuestions(mockQuestions)
+        const collection = await QuestionsService.getQuestionsByCollectionId(id!);
+        console.log(collection);
+        setQuestions(collection.data);
       } catch (err) {
-        setError("Failed to load questions.");
+        setError('Failed to load questions.');
         console.error(err);
       } finally {
         setLoading(false);
@@ -48,13 +47,14 @@ const QuizPage: React.FC = () => {
   }, []);
 
   const handleSelect = (selectedOption: string) => {
-  const question = questions[currentIndex];
-  const isCorrect = question.options.find(opt => opt.text === selectedOption)?.isCorrect || false;
-  setSelectedAnswers((prev) => ({
-    ...prev,
-    [currentIndex]: { selected: selectedOption, isCorrect }
-  }));
-};
+    const question = questions[currentIndex];
+    const isCorrect =
+      question.answers.find((opt) => opt.text === selectedOption)?.isCorrect || false;
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [currentIndex]: { selected: selectedOption, isCorrect },
+    }));
+  };
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
@@ -68,21 +68,21 @@ const QuizPage: React.FC = () => {
     }
   };
 
-  const totalCorrect = Object.values(selectedAnswers).filter(a => a.isCorrect).length;
+  const totalCorrect = Object.values(selectedAnswers).filter((a) => a.isCorrect).length;
 
   const handleSubmit = () => {
     navigate(`/results/${id}`, {
       state: {
         questions,
         selectedAnswers,
-        totalCorrect
-      }
+        totalCorrect,
+      },
     });
   };
 
   if (loading) {
     return (
-      <Box textAlign="center" mt={5}>
+      <Box textAlign='center' mt={5}>
         <CircularProgress />
       </Box>
     );
@@ -90,21 +90,25 @@ const QuizPage: React.FC = () => {
 
   if (error) {
     return (
-      <Typography variant="h6" color="error" textAlign="center">
+      <Typography variant='h6' color='error' textAlign='center'>
         {error}
       </Typography>
     );
   }
 
   if (!questions.length) {
-    return <Typography variant="h6" textAlign="center">No questions available.</Typography>;
+    return (
+      <Typography variant='h6' textAlign='center'>
+        No questions available.
+      </Typography>
+    );
   }
 
   const currentQuestion = questions[currentIndex];
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth='sm'>
       <Box
         sx={{
           mt: 8,
@@ -122,12 +126,12 @@ const QuizPage: React.FC = () => {
           }}
         >
           <Box sx={{ px: 3, pt: 3 }}>
-            <Typography variant="h6" fontWeight={600} mb={1} textAlign="center">
+            <Typography variant='h6' fontWeight={600} mb={1} textAlign='center'>
               Quiz
             </Typography>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Box display='flex' alignItems='center' justifyContent='space-between' mb={2}>
               <LinearProgress
-                variant="determinate"
+                variant='determinate'
                 value={progress}
                 sx={{
                   height: 8,
@@ -136,30 +140,34 @@ const QuizPage: React.FC = () => {
                   flexGrow: 1,
                   mr: 2,
                   '& .MuiLinearProgress-bar': {
-                    backgroundColor: '#1976d2'
-                  }
+                    backgroundColor: '#1976d2',
+                  },
                 }}
               />
-              <Typography variant="subtitle1" fontWeight={700} color="text.secondary" whiteSpace="nowrap">
+              <Typography
+                variant='subtitle1'
+                fontWeight={700}
+                color='text.secondary'
+                whiteSpace='nowrap'
+              >
                 Question {currentIndex + 1} of {questions.length}
               </Typography>
             </Box>
           </Box>
 
           <CardContent sx={{ pt: 0 }}>
-            <Typography variant="h5" fontWeight={700} mb={3}>
-              {currentQuestion.questionText}
+            <Typography variant='h5' fontWeight={700} mb={3}>
+              {currentQuestion.text}
             </Typography>
 
             <Stack spacing={2} mb={4}>
-              {currentQuestion.options.map((opt, i) => {
+              {currentQuestion.answers.map((opt, i) => {
                 const isSelected = selectedAnswers[currentIndex]?.selected === opt.text;
                 return (
                   <Button
                     key={i}
-                    variant={isSelected ? "contained" : "outlined"}
-                    color={isSelected ? "primary" : "inherit"}
-
+                    variant={isSelected ? 'contained' : 'outlined'}
+                    color={isSelected ? 'primary' : 'inherit'}
                     fullWidth
                     onClick={() => handleSelect(opt.text)}
                     sx={{
@@ -173,7 +181,7 @@ const QuizPage: React.FC = () => {
                       '&:hover': {
                         backgroundColor: isSelected ? 'primary.main' : '#f1f5f9',
                         color: isSelected ? '#fff' : 'primary.main',
-                      }
+                      },
                     }}
                   >
                     {opt.text}
@@ -182,10 +190,10 @@ const QuizPage: React.FC = () => {
               })}
             </Stack>
 
-            <Box display="flex" justifyContent="space-between" mt={2}>
+            <Box display='flex' justifyContent='space-between' mt={2}>
               <Button
-                variant="text"
-                color="inherit"
+                variant='text'
+                color='inherit'
                 onClick={handlePrevious}
                 disabled={currentIndex === 0}
                 sx={{ fontWeight: 600 }}
@@ -195,8 +203,8 @@ const QuizPage: React.FC = () => {
 
               {currentIndex === questions.length - 1 ? (
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant='contained'
+                  color='primary'
                   onClick={handleSubmit}
                   disabled={!selectedAnswers[currentIndex]}
                   sx={{ fontWeight: 600, px: 4 }}
@@ -205,8 +213,8 @@ const QuizPage: React.FC = () => {
                 </Button>
               ) : (
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant='contained'
+                  color='primary'
                   onClick={handleNext}
                   disabled={!selectedAnswers[currentIndex]}
                   sx={{ fontWeight: 600, px: 4 }}
