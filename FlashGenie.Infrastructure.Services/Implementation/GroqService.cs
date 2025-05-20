@@ -87,57 +87,56 @@ namespace FlashGenie.Infrastructure.Services.Implementation
         private string GenerateBasePrompt(string content, int questionCount)
         {
             return $@"
-                Generate a JSON object containing a quiz collection with the following structure:
-                - name: (string) the name of the quiz collection
-                - questionCount: (int) the number of questions
-                - userId: (string) a placeholder user ID (e.g., 'default-user')
-                - questions: an array of questions (as described below)
+             Generate a JSON object containing a quiz collection with the following structure:
+             - name: (string) the name of the quiz collection
+             - questionCount: (int) the number of questions
+             - userId: (string) a placeholder user ID (e.g., 'default-user')
+             - questions: an array of questions (as described below)
 
-                Each question must contain:
-                - type: one of 'SINGLE_CHOICE', 'MULTIPLE_CHOICE', or 'TRUE_FALSE'
-                - question: (string) the text of the question
-                - answers: an array of answer objects, each with:
-                  - text: (string) the answer text
-                  - isCorrect: (boolean) whether the answer is correct
-                  - displayOrder: (int) the display order of the answer (0-based index)
+             Each question must contain:
+             - type must be 'SINGLE_CHOICE'
+             - question: (string) the text of the question
+             - answers: an array of answer objects, each with:
+               - text: (string) the answer text
+               - isCorrect: (boolean) whether the answer is correct
+               - displayOrder: (int) the display order of the answer (0-based index)
 
-                For TRUE_FALSE questions, answers must be exactly two entries: one for 'True' and one for 'False', with appropriate isCorrect values.
 
-                Generate exactly {questionCount} questions based on the provided content.
-                IMPORTANT: Return ONLY a valid JSON object, and nothing else. No markdown, no explanation, no backticks.
+             Generate exactly {questionCount} questions based on the provided content.
+             IMPORTANT: Return ONLY a valid JSON object, and nothing else. No markdown, no explanation, no backticks.
 
-                Here is an example of the required structure:
-                {{
-                    ""name"": ""Generated Quiz"",
-                    ""questionCount"": 2,
-                    ""userId"": ""default-user"",
-                    ""questions"": [
-                        {{
-                            ""type"": ""SINGLE_CHOICE"",
-                            ""question"": ""What is the capital of France?"",
-                            ""answers"": [
-                                {{ ""text"": ""Paris"", ""isCorrect"": true, ""displayOrder"": 0 }},
-                                {{ ""text"": ""London"", ""isCorrect"": false, ""displayOrder"": 1 }},
-                                {{ ""text"": ""Rome"", ""isCorrect"": false, ""displayOrder"": 2 }},
-                                {{ ""text"": ""Berlin"", ""isCorrect"": false, ""displayOrder"": 3 }}
-                            ]
-                        }},
-                        {{
-                            ""type"": ""TRUE_FALSE"",
-                            ""question"": ""Is the Earth flat?"",
-                            ""answers"": [
-                                {{ ""text"": ""True"", ""isCorrect"": false, ""displayOrder"": 0 }},
-                                {{ ""text"": ""False"", ""isCorrect"": true, ""displayOrder"": 1 }}
-                            ]
-                        }}
-                    ]
-                }}
+             Here is an example of the required structure:
+             {{
+                 ""name"": ""Generated Quiz"",
+                 ""questionCount"": 2,
+                 ""userId"": ""default-user"",
+                 ""questions"": [
+                     {{
+                         ""type"": ""SINGLE_CHOICE"",
+                         ""question"": ""What is the capital of France?"",
+                         ""answers"": [
+                             {{ ""text"": ""Paris"", ""isCorrect"": true, ""displayOrder"": 0 }},
+                             {{ ""text"": ""London"", ""isCorrect"": false, ""displayOrder"": 1 }},
+                             {{ ""text"": ""Rome"", ""isCorrect"": false, ""displayOrder"": 2 }},
+                             {{ ""text"": ""Berlin"", ""isCorrect"": false, ""displayOrder"": 3 }}
+                         ]
+                     }},
+                     {{
+                         ""type"": ""SINGLE_CHOICE"",
+                         ""question"": ""Is the Earth flat?"",
+                         ""answers"": [
+                             {{ ""text"": ""Yes"", ""isCorrect"": false, ""displayOrder"": 0 }},
+                             {{ ""text"": ""No"", ""isCorrect"": true, ""displayOrder"": 1 }}
+                         ]
+                     }}
+                 ]
+             }}
 
-                Here is the content to generate questions from:
-                ---
-                {content}
-                ---
-                ";
+             Here is the content to generate questions from:
+             ---
+             {content}
+             ---
+             ";
         }
 
         private class OpenAIResponse
