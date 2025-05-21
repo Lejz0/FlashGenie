@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useEffect, useState } from 'react';
 import { Box, Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';

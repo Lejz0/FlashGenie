@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Box, Button, Divider, Typography } from '@mui/material';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';

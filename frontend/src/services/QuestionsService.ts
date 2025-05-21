@@ -1,7 +1,7 @@
 import axiosInstance from '../axios/customAxios.ts';
 
 const QuestionsService = {
-  generate(data) {
+  generate(data: string) {
     return axiosInstance.post('/Questions/generate', data);
   },
   getQuestionsByCollectionId(id: string) {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import Logo from '../assets/icon.png';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';

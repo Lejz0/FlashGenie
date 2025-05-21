@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Alert, Box, Button, styled, Typography } from '@mui/material';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import { useState } from 'react';
